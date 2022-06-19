@@ -1,0 +1,12 @@
+.input {
+  padding: 16.5px 14px;
+  width: 600px;
+}
+.search {
+  justify-content: space-around;
+}
+.button-pages {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}

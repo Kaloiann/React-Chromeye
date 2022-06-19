@@ -1,23 +1,42 @@
-import logo from './logo.svg';
 import './App.css';
+import People from './components/People/people';
+import './components/Input/input.js'
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [data, setData] = useState([])
+  const [searchFilter, setSearchFilter] = useState('')
+  const [filteredResult, setFilteredResult] = useState([])
+
+  const handleSearch = (e) => {
+    const keyword = e.target.value
+
+    if(keyword !== '') {
+      const results = data.filter(person => person.firstName.toLowerCase().includes(keyword.toLowerCase()) || person.lastName.toLowerCase().includes(keyword.toLowerCase()))
+      setFilteredResult(results)
+    } else {
+      setFilteredResult(data)
+    }
+
+    setSearchFilter(keyword)
+  }
+
+  useEffect(() => {
+    async function fetchData(){
+      const response = await fetch('http://apis.chromeye.com:9191/people')
+      const json = JSON.parse(await response.text())
+      setData(json)
+      setFilteredResult(json)
+    }
+    fetchData()
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className='flex search'>
+      <input className='input' onChange={handleSearch} value={searchFilter} type="text" placeholder="Enter Keyword" />
+      </div>
+     <People data={data} filteredResult={filteredResult} />
     </div>
   );
 }
